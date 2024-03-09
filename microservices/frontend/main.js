@@ -30,7 +30,7 @@ app.get('/metrics', (req, res) => {
 
 // Loading environment variables
 const port = process.env.APP_PORT || 3000;
-const dbhost = process.env.DATABASE_HOST || 'database';
+const dbhost = process.env.DATABASE_HOST || 'localhost';
 const dbname = process.env.DATABASE_NAME || 'votes';
 const dbuser = process.env.DATABASE_USER || 'postgres';
 const dbpass = process.env.DATABASE_PASSWORD || 'postgres';
