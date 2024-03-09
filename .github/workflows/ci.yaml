@@ -20,7 +20,6 @@ jobs:
     services:
       database:
         image: postgres:15-alpine
-        restart: always
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -54,11 +53,10 @@ jobs:
     defaults:
       run:
         working-directory: microservices/backend
-    name: Node ${{ matrix.service }} unit test
+    name: Python ${{ matrix.service }} unit test
     services:
       database:
         image: postgres:15-alpine
-        restart: always
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
