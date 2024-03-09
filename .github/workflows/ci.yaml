@@ -14,11 +14,8 @@ jobs:
           - frontend
           - backend
           - worker
-        node-version:
-          - "14.x"
-          - "16.x"
-          - "18.x"
-    name: Node ${{ matrix.node }} unit test
+
+    name: Node ${{ matrix.service }} unit test
     services:
       database:
         image: postgres:15-alpine
@@ -40,8 +37,9 @@ jobs:
 
       - name: Use Node.js
         uses: actions/setup-node@v4
+        working-directory: ./microservices/${{ matrix.service }}
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "18.x"
           cache: "npm"
       - run: npm ci
       - run: yarn install
