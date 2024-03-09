@@ -121,10 +121,10 @@ app.get('/healthz', (req, res) => {
 
 const main = async () => {
   const pgClient = await openDbConnection({
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
+    host: process.env.DATABASE_HOST || "database",
+    user: process.env.DATABASE_USER || "postgres",
+    password: process.env.DATABASE_PASSWORD || "postgres",
+    database: process.env.DATABASE_NAME || "votes",
   });
 
   const redisClient = await openRedisConnection("redis");
