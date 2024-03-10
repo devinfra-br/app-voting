@@ -7,6 +7,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl tini && \
     rm -rf /var/lib/apt/lists/* && \
     npm install -g nodemon && \
+    npm install && \
     npm cache clean --force && \
     mv /app/node_modules /node_modules
 
