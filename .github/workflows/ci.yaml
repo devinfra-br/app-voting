@@ -91,34 +91,27 @@ jobs:
     needs: security_img_scan
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.semantic_release.outputs.version }}
+      tags: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          node-version: '20.x'
-
-      - name: Install dependencies
-        run: |
-          npm ci
-          npm install
-
-      - name: Run semantic release
-        id: semantic_release
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          OUTPUT=$(npx semantic-release --dry-run | grep 'The next release version is' | sed -E 's/.* ([[:digit:].]+)$/\1/')
-          echo $OUTPUT
-          echo "::set-output name=version::$OUTPUT"
+          images: |
+            name/app
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
       - name: Use output version
-        id: version
-        run: echo "${{ steps.semantic_release.outputs.version }}"
+        id: output-version
+        run: echo ${{ steps.meta.outputs.tags }}
 
   build_and_push:
 
@@ -152,5 +145,5 @@ jobs:
           file: ./microservices/${{ matrix.service }}/Dockerfile
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{needs.release_generate.outputs.version}}  
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{needs.release_generate.outputs.tags}}  
             docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
