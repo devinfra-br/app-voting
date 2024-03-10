@@ -72,6 +72,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Build images 
+        run: |
+          docker build -t docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }} -f microservices/${{ matrix.service }}/Dockerfile .
       - name: Security scan
         uses: docker://aquasec/trivy:0.19.2
         with:
