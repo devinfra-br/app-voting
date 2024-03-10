@@ -110,7 +110,6 @@ jobs:
             ${{ matrix.service }}
           tags: |
             type=sha,prefix=v-{{sha}}
-            type=raw,value=v-{{sha}}
 
       - name: Use output version
         id: output-version
