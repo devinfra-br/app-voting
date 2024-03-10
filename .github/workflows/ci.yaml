@@ -134,7 +134,7 @@ jobs:
         uses: cloudposse/github-action-docker-build-push@main
         with:
           registry: registry.hub.docker.com
-          repository: "${{ github.event.repository.name }}"
+          repository: "${{ secrets.DOCKERHUB_USERNAME }}"
           file: ./microservices/${{ matrix.service }}/Dockerfile
           login: "${{ secrets.DOCKERHUB_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_PASSWORD }}"
