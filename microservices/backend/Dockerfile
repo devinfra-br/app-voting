@@ -6,12 +6,14 @@ WORKDIR /app
 
 COPY microservices/backend/ .
 
-RUN apt-get update && apt-get upgrade -y && \
+RUN set -x && \
+    apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl && \
+    dpkgArch="$(dpkg --print-architecture)" && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 80
 
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "4", "--keep-alive", "0"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "1", "--keep-alive", "0"]
 
