@@ -87,7 +87,7 @@ jobs:
           #severity: 'CRITICAL,HIGH'
         continue-on-error: true  
 
-  release_generate:
+  build_and_push:
     needs: security_img_scan
     runs-on: ubuntu-latest
     strategy:
@@ -96,11 +96,12 @@ jobs:
           - frontend
           - backend
           - worker
-    outputs:
-      tags: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Docker meta
         id: meta
@@ -110,36 +111,25 @@ jobs:
             ${{ matrix.service }}
           tags: |
             type=sha,prefix=v-{{sha}}
+            type=raw,value=v-{{sha}}
 
       - name: Use output version
         id: output-version
         run: echo ${{ steps.meta.outputs.tags }}
 
-  build_and_push:
-
-    needs: release_generate
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service:
-          - frontend
-          - backend
-          - worker
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        id: docker_login
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push ${{ matrix.service }} image
-        id: build
-        uses: cloudposse/github-action-docker-build-push@main
+        uses: docker/build-push-action@v5
+        id: docker_build
         with:
-          registry: registry.hub.docker.com
-          repository: "${{ secrets.DOCKERHUB_USERNAME }}"
+          context: .
           file: ./microservices/${{ matrix.service }}/Dockerfile
-          login: "${{ secrets.DOCKERHUB_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
-
-    outputs:
-      image: ${{ steps.build.outputs.image }}
-      tag: ${{ steps.build.outputs.tag }}            
+          push: true
+          tags: |
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.tags }}
