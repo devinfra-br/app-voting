@@ -109,12 +109,8 @@ jobs:
           images: |
             ${{ matrix.service }}
           tags: |
-            type=sha
-            # type=ref,event=branch
-            # type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=sha,prefix=v-{{sha}}
+            type=raw,value=v-{{sha}}
 
       - name: Use output version
         id: output-version
@@ -134,22 +130,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        id: docker_login
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Build and push ${{ matrix.service }} image
-        uses: docker/build-push-action@v5
-        id: docker_build
+        id: build
+        uses: cloudposse/github-action-docker-build-push@main
         with:
-          context: .
+          registry: registry.hub.docker.com
+          repository: "${{ github.event.repository.name }}"
           file: ./microservices/${{ matrix.service }}/Dockerfile
-          push: true
-          tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{needs.release_generate.outputs.tags}}
+          login: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
+
+    outputs:
+      image: ${{ steps.build.outputs.image }}
+      tag: ${{ steps.build.outputs.tag }}            
