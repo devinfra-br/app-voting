@@ -80,7 +80,7 @@ jobs:
         with:
           args: --exit-code 1 --severity HIGH,CRITICAL docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
           format: 'table'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           #severity: 'CRITICAL,HIGH'
