@@ -112,7 +112,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          OUTPUT=$(npx semantic-release --output)
+          OUTPUT=$(npx semantic-release --dry-run | grep 'The next release version is' | sed -E 's/.* ([[:digit:].]+)$/\1/')
+          echo $OUTPUT
           echo "::set-output name=version::$OUTPUT"
 
       - name: Use output version
