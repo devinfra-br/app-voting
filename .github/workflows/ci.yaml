@@ -90,6 +90,12 @@ jobs:
   release_generate:
     needs: security_img_scan
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - frontend
+          - backend
+          - worker
     outputs:
       tags: ${{ steps.meta.outputs.tags }}
     steps:
@@ -101,7 +107,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            name/app
+            microservices/${{ matrix.service }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
