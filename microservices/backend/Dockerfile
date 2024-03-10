@@ -1,5 +1,8 @@
 FROM python:3.13.0a4-slim
 
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
 ENV FLASK_ENV=development
 
 WORKDIR /app

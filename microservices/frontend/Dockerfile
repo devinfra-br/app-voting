@@ -3,7 +3,7 @@ FROM node:18-slim
 WORKDIR /app
 COPY microservices/frontend/ .
 
-RUN apt-get update && \
+RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl tini && \
     rm -rf /var/lib/apt/lists/* && \
     npm install -g nodemon && \
