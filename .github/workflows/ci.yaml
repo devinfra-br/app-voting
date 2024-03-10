@@ -111,11 +111,6 @@ jobs:
             ${{ matrix.service }}
           tags: |
             type=sha,prefix=v-{{sha}}
-            type=raw,value=v-{{sha}}
-
-      - name: Use output version
-        id: output-version
-        run: echo ${{ steps.meta.outputs.tags }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -133,3 +128,7 @@ jobs:
           push: true
           tags: |
             docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.tags }}
+
+      - name: Use output version
+        id: output-version
+        run: echo ${{ steps.meta.outputs.tags }}            
