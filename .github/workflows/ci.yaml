@@ -89,7 +89,7 @@ jobs:
 
   build_and_push:
     needs: security_img_scan
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         service:
@@ -97,8 +97,9 @@ jobs:
           - backend
           - worker
         platform:
-          - linux/amd64
-          - linux/arm/v7     
+          - amd64
+          - arm/v7 
+          - i386    
     steps:
 
       - name: Prepare
