@@ -79,7 +79,11 @@ jobs:
         uses: docker://aquasec/trivy:0.19.2
         with:
           args: --exit-code 1 --severity HIGH,CRITICAL docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
-
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          #severity: 'CRITICAL,HIGH'
   release_generate:
     needs: security_img_scan
     runs-on: ubuntu-latest
