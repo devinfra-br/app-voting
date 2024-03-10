@@ -151,7 +151,5 @@ jobs:
           file: ./microservices/${{ matrix.service }}/Dockerfile
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:$TAG
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{needs.release_generate.outputs.version}}  
             docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
-          env: 
-            TAG: ${{needs.release_generate.outputs.version}}  
