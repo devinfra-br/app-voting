@@ -86,7 +86,7 @@ jobs:
           vuln-type: 'os,library'
           #severity: 'CRITICAL,HIGH'
         continue-on-error: true  
-        
+
   release_generate:
     needs: security_img_scan
     runs-on: ubuntu-latest
@@ -95,12 +95,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+
       - name: Install dependencies
         run: npm install
 
       - name: Run semantic release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
 
   build_and_push:
@@ -129,6 +135,6 @@ jobs:
             docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ env.VERSION }}
             docker.io/${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
         env:
-          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          VERSION: ${{ steps.release_generate.outputs.VERSION }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
