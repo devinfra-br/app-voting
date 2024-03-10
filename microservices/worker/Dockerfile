@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY microservices/worker/ .
 
-RUN apt-get update && \
+RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/* && \
     npm install && \
     npm ci && \
