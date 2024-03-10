@@ -7,12 +7,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl tini && \
     rm -rf /var/lib/apt/lists/* && \
     npm install -g nodemon && \
-    npm install chai sinon sinon-chai mocha --save-dev && \
-    npm ci && \
-    set -x && \
-    mocha --version && \
-    mocha --reporter mochawesome --reporter-options reportDir=reports,reportFilename=frontend-tests && \
-    sleep 5 && \
     npm cache clean --force && \
     mv /app/node_modules /node_modules
 

@@ -10,7 +10,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from redis import Redis
 
 # Env vars
-REDIS = os.getenv('REDIS_HOST', "redis")
+REDIS = os.getenv('REDIS_HOST', "localhost")
 
 # App setup
 option_a = os.getenv('OPTION_A', "Cats")

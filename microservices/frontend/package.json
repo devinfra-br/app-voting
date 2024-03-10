@@ -6,7 +6,7 @@
   "author": "devinfrabr",
   "license": "MIT",
   "scripts": {
-    "test": "DOTENV_CONFIG_PATH=.env jest --watchAll",
+    "test": "DOTENV_CONFIG_PATH=.env jest --detectOpenHandles --forceExit ",
     "start": "node --env-file=.env main.js",
     "server": "nodemon --env-file=.env main.js"
   },

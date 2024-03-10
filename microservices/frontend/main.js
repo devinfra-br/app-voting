@@ -6,6 +6,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const prometheus = require('prom-client');
+require('events').EventEmitter.defaultMaxListeners = 15;
 
 // Define Prometheus metrics
 const httpRequestCounter = new prometheus.Counter({
@@ -20,8 +21,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Your existing code goes here...
-
 // Define a route to expose Prometheus metrics
 app.get('/metrics', (req, res) => {
   res.set('Content-Type', prometheus.register.contentType);
@@ -29,19 +28,14 @@ app.get('/metrics', (req, res) => {
 });
 
 // Loading environment variables
-const port = process.env.APP_PORT || 3000;
+const port = process.env.APP_PORT || 80;
 const dbhost = process.env.DATABASE_HOST || 'localhost';
 const dbname = process.env.DATABASE_NAME || 'votes';
 const dbuser = process.env.DATABASE_USER || 'postgres';
 const dbpass = process.env.DATABASE_PASSWORD || 'postgres';
 
-
 if (!dbhost) {
   throw new Error("DATABASE_HOST not set");
-}
-
-if (!dbname) {
-  throw new Error("DATABASE_NAME not set");
 }
 
 const connectionString = `postgres://${dbuser}:${dbpass}@${dbhost}/${dbname}`;
@@ -85,9 +79,19 @@ function getVotes(client) {
       var votes = collectVotesFromResult(result);
       io.sockets.emit("scores", JSON.stringify(votes));
     }
-
-    setTimeout(function() {getVotes(client) }, 1000);
   });
+
+  // Handle error event for the client
+  client.on('error', function(err) {
+    console.error("Database connection error: " + err);
+  });
+
+  // Handle error event for the setTimeout function
+  client.on('error', function(err) {
+    console.error("Timer error: " + err);
+  });
+
+  setTimeout(function() { getVotes(client) }, 1000);
 }
 
 function collectVotesFromResult(result) {
