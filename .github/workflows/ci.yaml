@@ -97,8 +97,7 @@ jobs:
           - backend
           - worker
         platform:
-          - linux/amd64
-          - linux/arm/v7     
+          - linux/amd64  
     steps:
 
       - name: Prepare
