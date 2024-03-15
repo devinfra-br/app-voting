@@ -18,7 +18,11 @@ async function openDbConnection(connectionOptions) {
 
   while (true) {
     try {
-      pgClient = new Client(connectionOptions);
+      const sslConfig = {
+        rejectUnauthorized: false
+      };
+
+      pgClient = new Client({ ...connectionOptions, ssl: sslConfig });
       await pgClient.connect();
       break;
     } catch (error) {
@@ -125,6 +129,7 @@ const main = async () => {
     user: process.env.DATABASE_USER || "postgres",
     password: process.env.DATABASE_PASSWORD || "postgres",
     database: process.env.DATABASE_NAME || "votes",
+    ssl: true,
   });
 
   const redisClient = await openRedisConnection("redis");
@@ -167,6 +172,7 @@ const main = async () => {
             user: process.env.DATABASE_USER,
             password: process.env.DATABASE_PASSWORD,
             database: process.env.DATABASE_NAME,
+            ssl: true,
           });
         } finally {
           // Normal +1 vote requested

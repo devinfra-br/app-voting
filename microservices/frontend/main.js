@@ -38,7 +38,16 @@ if (!dbhost) {
   throw new Error("DATABASE_HOST not set");
 }
 
-const connectionString = `postgres://${dbuser}:${dbpass}@${dbhost}/${dbname}`;
+const pool = new Pool({
+  connectionString: `postgres://${dbuser}:${dbpass}@${dbhost}/${dbname}`,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+const connectionString = `postgres://${dbuser}:${dbpass}@${dbhost}/${dbname}?ssl=true`;
+
+console.log("Connecting to database: " + connectionString);
 
 io.on('connection', function (socket) {
   socket.emit('message', { text : 'Welcome!' });
@@ -46,10 +55,6 @@ io.on('connection', function (socket) {
   socket.on('subscribe', function (data) {
     socket.join(data.channel);
   });
-});
-
-const pool = new Pool({
-  connectionString: connectionString
 });
 
 async.retry(
