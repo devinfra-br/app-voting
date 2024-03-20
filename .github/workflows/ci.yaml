@@ -174,7 +174,7 @@ jobs:
           push: true
           labels: ${{ steps.metasha.outputs.labels }}
           tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.metasha.outputs.metalatest }}
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.metasha.outputs.tags }}
 
       - name: Build and push ${{ matrix.service }} image
         uses: docker/build-push-action@v5
