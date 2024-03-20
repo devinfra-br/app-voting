@@ -64,17 +64,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
         with:
-          node-version: 12
-      - run: npm ci
+          fetch-depth: '0'        
+      - name: Minor version for each merge
+        id: AutoTagger
+        uses: anothrNick/github-tag-action@1.36.0
         env:
-          CI: "true"
-      - uses: phish108/autotag-action@v1.1.55
-        with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          with-v: "true"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          WITH_V: 'true'
 
   security_img_scan:
     runs-on: ubuntu-latest
