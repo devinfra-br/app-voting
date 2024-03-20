@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   unit_test_node:
     runs-on: ubuntu-latest
@@ -59,9 +58,19 @@ jobs:
         run: | 
            python -m unittest -v
 
-  security_img_scan:
+  tagging_repo: 
     runs-on: ubuntu-latest
     needs: [unit_test_python, unit_test_node]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: butlerlogic/action-autotag@stable
+        env:
+          GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+
+  security_img_scan:
+    runs-on: ubuntu-latest
+    needs: [tagging_repo]
     strategy:
       matrix:
         service:
