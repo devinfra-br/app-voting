@@ -166,7 +166,7 @@ jobs:
 
       - name: Build and push ${{ matrix.service }} image main
         uses: docker/build-push-action@v5
-        id: docker_build
+        id: docker_build_sha
         with:
           context: .
           file: ./microservices/${{ matrix.service }}/Dockerfile
@@ -178,7 +178,7 @@ jobs:
 
       - name: Build and push ${{ matrix.service }} image
         uses: docker/build-push-action@v5
-        id: docker_build
+        id: docker_build_latest
         with:
           context: .
           file: ./microservices/${{ matrix.service }}/Dockerfile
