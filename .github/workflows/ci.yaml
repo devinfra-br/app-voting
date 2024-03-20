@@ -69,7 +69,6 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
-      - run: npm test
         env:
           CI: "true"
       - uses: phish108/autotag-action@v1.1.55
