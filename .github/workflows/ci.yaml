@@ -189,10 +189,10 @@ jobs:
             docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.metalatest.outputs.tags }}
 
       - name: Use output version latest
-        id: output-version
+        id: output-version-latest
         run: echo ${{ steps.metalatest.outputs.tags }}            
 
 
       - name: Use output version sha
-        id: output-version
+        id: output-version-sha
         run: echo ${{ steps.metasha.outputs.tags }}          
