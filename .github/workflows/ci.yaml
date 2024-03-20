@@ -133,7 +133,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Docker meta
+      - name: Docker meta latest
         id: metalatest
         uses: docker/metadata-action@v5
         with:
@@ -142,7 +142,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Docker meta
+      - name: Docker meta sha
         id: metasha
         uses: docker/metadata-action@v5
         with:
@@ -166,28 +166,33 @@ jobs:
 
       - name: Build and push ${{ matrix.service }} image main
         uses: docker/build-push-action@v5
-        id: docker_build_main
+        id: docker_build
         with:
           context: .
           file: ./microservices/${{ matrix.service }}/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.metasha.outputs.labels }}
           tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.metalatest }}
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.metasha.outputs.metalatest }}
 
       - name: Build and push ${{ matrix.service }} image
         uses: docker/build-push-action@v5
-        id: docker_build_sha
+        id: docker_build
         with:
           context: .
           file: ./microservices/${{ matrix.service }}/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.metalatest.outputs.labels }}
           tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.metasha }}
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.metalatest.outputs.tags }}
 
-      - name: Use output version
+      - name: Use output version latest
         id: output-version
-        run: echo ${{ steps.meta.outputs.metasha }}
+        run: echo ${{ steps.metalatest.outputs.tags }}            
+
+
+      - name: Use output version sha
+        id: output-version
+        run: echo ${{ steps.metasha.outputs.tags }}          
