@@ -140,7 +140,7 @@ jobs:
           images: |
             ${{ matrix.service }}
           tags: |
-            type=sha,value={{github.sha}}
+            type=sha,prefix=v-{{sha}}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Set up QEMU
