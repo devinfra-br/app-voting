@@ -1,4 +1,4 @@
-FROM python:3.13.0a4-slim
+FROM --platform=$BUILDPLATFORM python:3.13.0a4-slim
 
 ENV FLASK_ENV=development
 

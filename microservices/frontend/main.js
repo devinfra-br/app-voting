@@ -45,8 +45,6 @@ const pool = new Pool({
   }
 });
 
-const connectionString = `postgres://${dbuser}:${dbpass}@${dbhost}/${dbname}?ssl=true`;
-
 console.log("Connecting to database: " + connectionString);
 
 io.on('connection', function (socket) {

@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM --platform=$BUILDPLATFORM node:18-slim
 
 WORKDIR /app
 COPY microservices/frontend/ .
