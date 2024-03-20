@@ -190,4 +190,4 @@ jobs:
 
       - name: Use output version
         id: output-version
-        run: echo ${{ steps.meta.outputs.metasha }}            
+        run: echo ${{ steps.meta.outputs.metasha }}
