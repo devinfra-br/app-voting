@@ -134,14 +134,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Docker meta
-        id: meta
+        id: metalatest
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ matrix.service }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Docker meta
+        id: metasha
         uses: docker/metadata-action@v5
         with:
           images: |
             ${{ matrix.service }}
           tags: |
             type=sha,prefix=v-{{sha}}
-            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -156,6 +164,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Build and push ${{ matrix.service }} image main
+        uses: docker/build-push-action@v5
+        id: docker_build
+        with:
+          context: .
+          file: ./microservices/${{ matrix.service }}/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.metalatest }}
+
       - name: Build and push ${{ matrix.service }} image
         uses: docker/build-push-action@v5
         id: docker_build
@@ -166,8 +186,8 @@ jobs:
           push: true
           labels: ${{ steps.meta.outputs.labels }}
           tags: |
-            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.tags }}
+            docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.meta.outputs.metasha }}
 
       - name: Use output version
         id: output-version
-        run: echo ${{ steps.meta.outputs.tags }}            
+        run: echo ${{ steps.meta.outputs.metasha }}            
