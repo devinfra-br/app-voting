@@ -64,9 +64,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: butlerlogic/action-autotag@stable
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm test
         env:
-          GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+          CI: "true"
+      - uses: phish108/autotag-action@v1.1.55
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          with-v: "true"
 
   security_img_scan:
     runs-on: ubuntu-latest
