@@ -92,5 +92,10 @@ def stats():
 def healthz():
     return "OK"
 
+# Route return error
+@app.route("/error")
+def error():
+    return "NotOk", 502
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
